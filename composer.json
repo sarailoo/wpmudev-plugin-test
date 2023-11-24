@@ -1,0 +1,38 @@
+{
+	"name": "wpmudev/plugintest",
+	"description": "A plugin focused on testing coding skills.",
+	"type": "project",
+	"config": {
+		"platform": {
+			"php": "7.4"
+		}
+	},
+	"homepage": "https://wpmudev.com/",
+	"license": "GPL-2.0+",
+	"authors": [
+		{
+			"name": "Incsub",
+			"homepage": "https://wpmudev.com"
+		}
+	],
+	"require": {
+		"google/apiclient": "^2.15"
+	},
+	"extra": {
+		"google/apiclient-services": [
+			"Oauth2",
+			"PeopleService"
+		]
+	},
+	"scripts": {
+		"post-install-cmd": [
+			"Google_Task_Composer::cleanup"
+		],
+		"post-update-cmd": [
+			"Google_Task_Composer::cleanup"
+		]
+	},
+	"autoload": {
+        "classmap": ["core/", "app/"]
+	}
+}
