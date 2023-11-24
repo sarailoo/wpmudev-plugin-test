@@ -24,27 +24,27 @@ Everything should be handled by npm.
 
 
 2. The plugin creates a new admin menu called Google Auth. Its admin page contains two fields, one is to insert **Client ID** and the second for **Client Secret**. There is a button that needs to save the inputs by passing them to backend and storing them in the `wpmudev_plugin_test_settings` option. What you need to do here is :
-   1. Make sure that page is translatable
-   2. The **Client Secret** field needs to be set to password, so that the input value is not visible\.
-   3. Add a functionality to that button so when it is clicked, it will send the inputs to this Rest endpoint `wp-json/wpmudev/v1/auth/auth-url` to be saved. Once successfully stored or of an error response, there should be a notification.\
-   4. That endpoint already exists, but you need to make sure that it is secure.\
-   5. Then fill in the endpoint’s callback so that it can store the inputs in db. The option’s name is `wpmudev_plugin_test_settings` (as mentioned above) and its value should be an array with the following structure:
+   - Make sure that page is translatable
+   - The **Client Secret** field needs to be set to password, so that the input value is not visible\.
+   - Add a functionality to that button so when it is clicked, it will send the inputs to this Rest endpoint `wp-json/wpmudev/v1/auth/auth-url` to be saved. Once successfully stored or of an error response, there should be a notification.\
+   - That endpoint already exists, but you need to make sure that it is secure.\
+   - Then fill in the endpoint’s callback so that it can store the inputs in db. The option’s name is `wpmudev_plugin_test_settings` (as mentioned above) and its value should be an array with the following structure:
 
            array(
                    'client_id'     => ’CLIENT ID’,
                    'client_secret' => ‘CLIENT SECRET’,
            )
 
-	6. Since we have data in DB now, when refreshing the page the values should be pre-filled correctly in the **Client ID** and **Client Secret** fields.
+	- Since we have data in DB now, when refreshing the page the values should be pre-filled correctly in the **Client ID** and **Client Secret** fields.
 
 3. In order to use Google’s oAuth, we need to set a return url. Please create a new endpoint that we can use as a return url.
-   1. The url of the endpoint should be `/wp-json/wpmudev/v1/auth/confirm`
-   2. That endpoint should provide the functionality to get the user’s email. If the email exists and user is not logged in, it should log in user. If the email does not exist, that endpoint ’s callback should extract username from email (before @), generate a new password, create a new user and then log user in. After logging in, user should be redirected to admin. If the extracted username exists already, redirect to home page.
+   - The url of the endpoint should be `/wp-json/wpmudev/v1/auth/confirm`
+   - That endpoint should provide the functionality to get the user’s email. If the email exists and user is not logged in, it should log in user. If the email does not exist, that endpoint ’s callback should extract username from email (before @), generate a new password, create a new user and then log user in. After logging in, user should be redirected to admin. If the extracted username exists already, redirect to home page.
 
 
 4. Please create a shortcode that will do the following:
-   1. If user is logged in, show a message **Hi [USERNAME], enjoy my site!**
-   2. If user is not logged in, show a link that will point to Google api’s auth Url. The link’s text can be something like **Login using Google oAuth**.
+   - If user is logged in, show a message **Hi [USERNAME], enjoy my site!**
+   - If user is not logged in, show a link that will point to Google api’s auth Url. The link’s text can be something like **Login using Google oAuth**.
 
 
 5. Please create a new admin menu page with title **Posts maintenance**. That page will have a button with title **Scan posts**. When that button is clicked, it will go through all public post and pages. There should be a filter that can modify post types. For each one of those posts (or specified post types), it should set the post_meta with name `wpmudev_test_last_scan` to current timestamp. The same operation should be repeated daily.
