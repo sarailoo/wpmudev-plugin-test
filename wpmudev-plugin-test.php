@@ -23,7 +23,6 @@ if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 }
 
 
-
 // Plugin version.
 if ( ! defined( 'WPMUDEV_PLUGINTEST_VERSION' ) ) {
 	define( 'WPMUDEV_PLUGINTEST_VERSION', '1.0.0' );
@@ -72,14 +71,15 @@ class WPMUDEV_PluginTest {
 	 *
 	 * Return an instance of the WPMUDEV_PluginTest Class.
 	 *
+	 * @return WPMUDEV_PluginTest class instance.
 	 * @since 1.0.0
 	 *
-	 * @return WPMUDEV_PluginTest class instance.
 	 */
 	public static function get_instance() {
 		if ( null === self::$instance ) {
 			self::$instance = new self();
 		}
+
 		return self::$instance;
 	}
 
@@ -90,18 +90,17 @@ class WPMUDEV_PluginTest {
 		load_plugin_textdomain(
 			'wpmudev-plugin-test',
 			false,
-			basename( dirname( __FILE__ ) ) . '/languages'
+			dirname( plugin_basename( __FILE__ ) ) . '/languages'
 		);
 
 		WPMUDEV\PluginTest\Loader::instance();
 	}
-
 }
 
 // Init the plugin and load the plugin instance for the first time.
 add_action(
 	'plugins_loaded',
-	function() {
+	function () {
 		WPMUDEV_PluginTest::get_instance()->load();
 	}
 );

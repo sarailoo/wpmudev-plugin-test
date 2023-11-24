@@ -2,17 +2,16 @@
 /**
  * Base class for all endpoint classes.
  *
- * @link    https://wpmudev.com/
- * @since   1.0.0
+ * @link          https://wpmudev.com/
+ * @since         1.0.0
  *
- * @author  WPMUDEV (https://wpmudev.com)
- * @package WPMUDEV\PluginTest
+ * @author        WPMUDEV (https://wpmudev.com)
+ * @package       WPMUDEV\PluginTest
  *
  * @copyright (c) 2023, Incsub (http://incsub.com)
  */
 
 namespace WPMUDEV\PluginTest;
-
 
 use WPMUDEV\PluginTest\Base;
 use WP_REST_Response;
@@ -86,9 +85,9 @@ class Endpoint extends WP_REST_Controller {
 	/**
 	 * Set up WordPress hooks and filters
 	 *
+	 * @return void
 	 * @since 1.0.0
 	 *
-	 * @return void
 	 */
 	public function register_hooks() {
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
@@ -97,11 +96,11 @@ class Endpoint extends WP_REST_Controller {
 	/**
 	 * Check if a given request has access to manage settings.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @param WP_REST_Request $request Request object.
 	 *
 	 * @return bool
+	 * @since 1.0.0
+	 *
 	 */
 	public function edit_permission( $request ) {
 		$capable = current_user_can( 'manage_options' );
@@ -109,11 +108,12 @@ class Endpoint extends WP_REST_Controller {
 		/**
 		 * Filter to modify settings rest capability.
 		 *
-		 * @since 1.0.0
-		 *
 		 * @param WP_REST_Request $request Request object.
 		 *
 		 * @param bool            $capable Is user capable?.
+		 *
+		 * @since 1.0.0
+		 *
 		 */
 		return apply_filters( 'wpmudev_plugintest_rest_settings_permission', $capable, $request );
 	}
@@ -121,12 +121,12 @@ class Endpoint extends WP_REST_Controller {
 	/**
 	 * Get formatted response for the current request.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @param array $data    Response data.
 	 * @param bool  $success Is request success.
 	 *
 	 * @return WP_REST_Response
+	 * @since 1.0.0
+	 *
 	 */
 	public function get_response( $data = array(), $success = true ) {
 		// Response status.

@@ -2,11 +2,11 @@
 /**
  * Google Auth Shortcode.
  *
- * @link    https://wpmudev.com/
- * @since   1.0.0
+ * @link          https://wpmudev.com/
+ * @since         1.0.0
  *
- * @author  WPMUDEV (https://wpmudev.com)
- * @package WPMUDEV\PluginTest
+ * @author        WPMUDEV (https://wpmudev.com)
+ * @package       WPMUDEV\PluginTest
  *
  * @copyright (c) 2023, Incsub (http://incsub.com)
  */
@@ -28,12 +28,13 @@ class Auth extends Endpoint {
 	 * @var string $endpoint
 	 */
 	protected $endpoint = 'auth/auth-url';
+
 	/**
 	 * Register the routes for handling auth functionality.
 	 *
+	 * @return void
 	 * @since 1.0.0
 	 *
-	 * @return void
 	 */
 	public function register_routes() {
 		// TODO
@@ -45,8 +46,8 @@ class Auth extends Endpoint {
 			$this->get_endpoint(),
 			array(
 				array(
-					'methods'  => 'GET',
-					'args'     => array(
+					'methods' => 'GET',
+					'args'    => array(
 						'client_id'     => array(
 							'required'    => true,
 							'description' => __( 'The client ID from Google API project.', 'wpmudev-plugin-test' ),
@@ -70,7 +71,5 @@ class Auth extends Endpoint {
 	 * @since 1.0.0
 	 */
 	public function save_credentials() {
-
 	}
-
 }

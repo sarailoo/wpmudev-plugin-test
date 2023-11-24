@@ -2,11 +2,11 @@
 /**
  * Google Auth Class.
  *
- * @link    https://wpmudev.com/
- * @since   1.0.0
+ * @link          https://wpmudev.com/
+ * @since         1.0.0
  *
- * @author  WPMUDEV (https://wpmudev.com)
- * @package WPMUDEV\PluginTest
+ * @author        WPMUDEV (https://wpmudev.com)
+ * @package       WPMUDEV\PluginTest
  *
  * @copyright (c) 2023, Incsub (http://incsub.com)
  */
@@ -43,17 +43,17 @@ class Auth extends Base {
 	 * Getter method for Client instance.
 	 *
 	 * It will always return the existing client instance.
-	 * If you need new instance set $new param as true.
+	 * If you need new instance set $new_instance param as true.
 	 *
-	 * @param bool $new To get new instance.
-	 *
-	 * @since 1.0.0
+	 * @param bool $new_instance To get new instance.
 	 *
 	 * @return Client
+	 * @since 1.0.0
+	 *
 	 */
-	public function client( $new = false ) {
+	public function client( $new_instance = false ) {
 		// If requested for new instance.
-		if ( $new || ! $this->client instanceof Client ) {
+		if ( $new_instance || ! $this->client instanceof Client ) {
 			// Set new instance.
 			$this->client = new Client();
 
@@ -69,6 +69,7 @@ class Auth extends Base {
 	 *
 	 * @param string $client_id
 	 * @param string $client_secret
+	 *
 	 * @return boolean
 	 */
 	public function set_up( string $client_id = '', string $client_secret = '' ): bool {

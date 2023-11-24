@@ -13,7 +13,6 @@
 
 namespace WPMUDEV\PluginTest;
 
-
 use WPMUDEV\PluginTest\Base;
 
 // If this file is called directly, abort.
@@ -96,5 +95,4 @@ final class Loader extends Base {
 		App\Admin_Pages\Auth::instance()->init();
 		Endpoints\V1\Auth::instance();
 	}
-
 }
