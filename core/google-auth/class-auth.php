@@ -43,7 +43,7 @@ class Auth extends Base {
 	 * Getter method for Client instance.
 	 *
 	 * It will always return the existing client instance.
-	 * If you need new instance set $new param as true.
+	 * If you need new instance set $new_instance param as true.
 	 *
 	 * @param bool $new_instance To get new instance.
 	 *
