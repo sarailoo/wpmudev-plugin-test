@@ -2,11 +2,11 @@
 /**
  * Google Auth block.
  *
- * @link    https://wpmudev.com/
- * @since   1.0.0
+ * @link          https://wpmudev.com/
+ * @since         1.0.0
  *
- * @author  WPMUDEV (https://wpmudev.com)
- * @package WPMUDEV\PluginTest
+ * @author        WPMUDEV (https://wpmudev.com)
+ * @package       WPMUDEV\PluginTest
  *
  * @copyright (c) 2023, Incsub (http://incsub.com)
  */
@@ -74,9 +74,9 @@ class Auth extends Base {
 	/**
 	 * Initializes the page.
 	 *
-	 * @since 1.0.0
-	 * 
 	 * @return void
+	 * @since 1.0.0
+	 *
 	 */
 	public function init() {
 		$this->page_title     = __( 'Google Auth', 'wpmudev-plugin-test' );
@@ -126,13 +126,15 @@ class Auth extends Base {
 		$handle       = 'wpmudev_plugintest_authpage';
 		$src          = WPMUDEV_PLUGINTEST_ASSETS_URL . '/js/authsettingspage.min.js';
 		$style_src    = WPMUDEV_PLUGINTEST_ASSETS_URL . '/css/authsettingspage.min.css';
-		$dependencies = ! empty( $this->script_data( 'dependencies' ) ) ? $this->script_data( 'dependencies' ) : array(
-			'react',
-			'wp-element',
-			'wp-i18n',
-			'wp-is-shallow-equal',
-			'wp-polyfill',
-		);
+		$dependencies = ! empty( $this->script_data( 'dependencies' ) )
+			? $this->script_data( 'dependencies' )
+			: array(
+				'react',
+				'wp-element',
+				'wp-i18n',
+				'wp-is-shallow-equal',
+				'wp-polyfill',
+			);
 
 		$this->page_scripts[ $handle ] = array(
 			'src'       => $src,
@@ -155,6 +157,7 @@ class Auth extends Base {
 	 * Gets assets data for given key.
 	 *
 	 * @param string $key
+	 *
 	 * @return string|array
 	 */
 	protected function script_data( string $key = '' ) {
@@ -186,7 +189,6 @@ class Auth extends Base {
 	public function enqueue_assets() {
 		if ( ! empty( $this->page_scripts ) ) {
 			foreach ( $this->page_scripts as $handle => $page_script ) {
-
 				wp_register_script(
 					$handle,
 					$page_script['src'],
@@ -194,19 +196,18 @@ class Auth extends Base {
 					$page_script['ver'],
 					$page_script['strategy']
 				);
-			}
 
-			if ( ! empty( $page_script['localize'] ) ) {
-				wp_localize_script( $handle, 'wpmudevPluginTest', $page_script['localize'] );
-			}
+				if ( ! empty( $page_script['localize'] ) ) {
+					wp_localize_script( $handle, 'wpmudevPluginTest', $page_script['localize'] );
+				}
 
-			wp_enqueue_script( $handle );
+				wp_enqueue_script( $handle );
 
-			if ( ! empty( $page_script['style_src'] ) ) {
-				wp_enqueue_style( $handle, $page_script['style_src'] );
+				if ( ! empty( $page_script['style_src'] ) ) {
+					wp_enqueue_style( $handle, $page_script['style_src'], array(), $this->assets_version );
+				}
 			}
 		}
-
 	}
 
 	/**
@@ -215,13 +216,14 @@ class Auth extends Base {
 	 * @return void
 	 */
 	protected function view() {
-		echo '<div id="' . $this->unique_id . '" class="sui-wrap"></div>';
+		echo '<div id="' . esc_attr( $this->unique_id ) . '" class="sui-wrap"></div>';
 	}
 
 	/**
 	 * Adds the SUI class on markup body.
 	 *
 	 * @param string $classes
+	 *
 	 * @return string
 	 */
 	public function admin_body_classes( $classes = '' ) {
