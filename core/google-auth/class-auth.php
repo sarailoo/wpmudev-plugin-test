@@ -77,7 +77,8 @@ class Auth extends Base {
 
 		$this->client()->setClientId( $client_id );
 		$this->client()->setClientSecret( $client_secret );
-		$this->client()->setRedirectUri( Auth_Confirm::instance()->get_endpoint_url() );
+		// Todo: Set the return url based on new endpoint.
+		//$this->client()->setRedirectUri();
 		$this->client()->addScope( 'profile' );
 		$this->client()->addScope( 'email' );
 
