@@ -19,6 +19,4 @@ definitions:
           - vendor/bin/phpcs --standard=phpcs.ruleset.xml
 pipelines:
   default: ## any branch
-    - parallel:
-        steps:
-          - step: *phpcs
+     - step: *phpcs
