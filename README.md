@@ -25,9 +25,10 @@ Everything should be handled by npm.
 
 2. The plugin creates a new admin menu called Google Auth. Its admin page contains two fields, one is to insert **Client ID** and the second for **Client Secret**. There is a button that needs to save the inputs by passing them to backend and storing them in the `wpmudev_plugin_test_settings` option. What you need to do here is :
 - a. Make sure that page is translatable.
-- b. Add a functionality to that button that when it is clicked it will send then inputs to this Rest endpoint `wp-json/wpmudev/v1/auth/auth-url` to be saved. Once successfully stored or of an error response, there should be a notification.
-- c. That endpoint already exists but you need to make sure that it is secure.
-- d. Then fill in the endpoint’s callback so that it can store the inputs in db. The option’s name is `wpmudev_plugin_test_settings` (as mentioned above) and its value should be an array with the following structure:
+- b. The **Client Secret** field needs to be set to password, so that the input value is not visible.
+- c. Add a functionality to that button so when it is clicked, it will send the inputs to this Rest endpoint `wp-json/wpmudev/v1/auth/auth-url` to be saved. Once successfully stored or of an error response, there should be a notification.
+- d. That endpoint already exists, but you need to make sure that it is secure.
+- e. Then fill in the endpoint’s callback so that it can store the inputs in db. The option’s name is `wpmudev_plugin_test_settings` (as mentioned above) and its value should be an array with the following structure:
 
         array(
                 'client_id'     => ’CLIENT ID’,
@@ -35,7 +36,7 @@ Everything should be handled by npm.
         )
 
 
-- e. Since we have data in DB now, when refreshing the page the values should be pre-filled correctly in the **Client ID** and **Client Secret** fields.
+- f. Since we have data in DB now, when refreshing the page the values should be pre-filled correctly in the **Client ID** and **Client Secret** fields.
 
 3. In order to use Google’s oAuth, we need to set a return url. Please create a new endpoint that we can use as a return url.
 - a. The url of the endpoint should be `/wp-json/wpmudev/v1/auth/confirm`
@@ -55,7 +56,10 @@ Everything should be handled by npm.
 6. For convenience of our sysadmins, they would like to run the **Scan posts** action you created above from terminal. Could you write WPCLI command for that and share instructions?
 
 
-7. As in every software there should be some testing done. A good starting point would be to run unit tests. As a demonstration, you need to create a unit test that will check if there is any error when running **Scan posts** you created in step 5.
+7. A user that tried this plugin on a site, reported that there is a conflict and site crashed, but didn't mention any other information. Can you guess which class(es) might be conflicting and provide a fix?
+
+
+8. As in every software there should be some testing done. A good starting point would be to run unit tests. As a demonstration, you need to create a unit test that will check if there is any error when running **Scan posts** you created in step 5.
 
 
 **Feel free to modify any part of plugin’s existing code to accomplish your goals, but make sure your code follows wp coding standards.**

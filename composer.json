@@ -18,12 +18,6 @@
 	"require": {
 		"google/apiclient": "^2.15"
 	},
-	"extra": {
-		"google/apiclient-services": [
-			"Oauth2",
-			"PeopleService"
-		]
-	},
 	"scripts": {
 		"post-install-cmd": [
 			"Google_Task_Composer::cleanup"
