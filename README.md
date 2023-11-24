@@ -33,22 +33,21 @@ Everything should be handled by npm.
    
    - That endpoint already exists, but you need to make sure that it is secure.
    
-   - Then fill in the endpoint’s callback so that it can store the inputs in db. The option’s name is `wpmudev_plugin_test_settings` (as mentioned above) and its value should be an array with the following structure:
+   - Then fill in the endpoint’s callback so that it can store the inputs in db. The option’s name is `wpmudev_plugin_test_settings` (as mentioned above). Please make sure that methods `WPMUDEV\PluginTest\Core\Google_Auth\get_client_id()` and `WPMUDEV\PluginTest\Core\Google_Auth\get_client_secret()` can get the values correctly from db.
 
-           array(
-                   'client_id'     => ’CLIENT ID’,
-                   'client_secret' => ‘CLIENT SECRET’,
-           )
-
-	- Since we have data in DB now, when refreshing the page the values should be pre-filled correctly in the **Client ID** and **Client Secret** fields.
+   - Since we have data in DB now, when refreshing the page the values should be pre-filled correctly in the **Client ID** and **Client Secret** fields.
 
 3. In order to use Google’s oAuth, we need to set a return url. Please create a new endpoint that we can use as a return url.
+
    - The url of the endpoint should be `/wp-json/wpmudev/v1/auth/confirm`
+   
    - That endpoint should provide the functionality to get the user’s email. If the email exists and user is not logged in, it should log in user. If the email does not exist, that endpoint ’s callback should extract username from email (before @), generate a new password, create a new user and then log user in. After logging in, user should be redirected to admin. If the extracted username exists already, redirect to home page.
 
 
 4. Please create a shortcode that will do the following:
+
    - If user is logged in, show a message **Hi [USERNAME], enjoy my site!**
+   
    - If user is not logged in, show a link that will point to Google api’s auth Url. The link’s text can be something like **Login using Google oAuth**.
 
 
