@@ -9,6 +9,9 @@ definitions:
           - composer
         script:
           - docker-php-ext-install pcntl # add pcntl, so we can parallel process this
+          - apt-get update && apt-get install -y unzip ssh git --no-install-recommends
+          - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
           - composer install
 
           - vendor/bin/phpcs --config-set show_progress 1
