@@ -24,10 +24,15 @@ Everything should be handled by npm.
 
 
 2. The plugin creates a new admin menu called Google Auth. Its admin page contains two fields, one is to insert **Client ID** and the second for **Client Secret**. There is a button that needs to save the inputs by passing them to backend and storing them in the `wpmudev_plugin_test_settings` option. What you need to do here is :
+
    - Make sure that page is translatable
-   - The **Client Secret** field needs to be set to password, so that the input value is not visible\.
-   - Add a functionality to that button so when it is clicked, it will send the inputs to this Rest endpoint `wp-json/wpmudev/v1/auth/auth-url` to be saved. Once successfully stored or of an error response, there should be a notification.\
-   - That endpoint already exists, but you need to make sure that it is secure.\
+   
+   - The **Client Secret** field needs to be set to password, so that the input value is not visible.
+   
+   - Add a functionality to that button so when it is clicked, it will send the inputs to this Rest endpoint `wp-json/wpmudev/v1/auth/auth-url` to be saved. Once successfully stored or of an error response, there should be a notification.
+   
+   - That endpoint already exists, but you need to make sure that it is secure.
+   
    - Then fill in the endpoint’s callback so that it can store the inputs in db. The option’s name is `wpmudev_plugin_test_settings` (as mentioned above) and its value should be an array with the following structure:
 
            array(
