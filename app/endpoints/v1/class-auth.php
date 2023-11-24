@@ -46,8 +46,8 @@ class Auth extends Endpoint {
 			$this->get_endpoint(),
 			array(
 				array(
-					'methods'             => WP_REST_Server::READABLE,
-					'args'                => array(
+					'methods' => 'GET',
+					'args'    => array(
 						'client_id'     => array(
 							'required'    => true,
 							'description' => __( 'The client ID from Google API project.', 'wpmudev-plugin-test' ),
@@ -59,21 +59,9 @@ class Auth extends Endpoint {
 							'type'        => 'string',
 						),
 					),
-					'permission_callback' => array( $this, 'get_item_permissions_check' ),
-					'callback'            => array( $this, 'get_item' ),
 				),
 			)
 		);
-	}
-
-	public function get_item_permissions_check( $request ) {
-		// TODO
-		return true;
-	}
-
-	public function get_item( $request ) {
-		// TODO
-		return rest_ensure_response( array() );
 	}
 
 	/**
@@ -83,6 +71,5 @@ class Auth extends Endpoint {
 	 * @since 1.0.0
 	 */
 	public function save_credentials() {
-		// TODO
 	}
 }
