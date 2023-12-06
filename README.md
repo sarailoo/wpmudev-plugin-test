@@ -11,8 +11,11 @@ Install composer packages
 ## Build Tasks (npm)
 Everything should be handled by npm.
 
-| Command              | Action                                                 |
-|----------------------|--------------------------------------------------------|
-| `npm run watch`      | Compiles and watch for changes.                        |
-| `npm run compile`    | Compile production ready assets.                       |
-| `npm run build`  | Build production ready submodule inside `/build/` folder |
+Install npm packages
+`npm install`
+
+| Command              | Action                                                |
+|----------------------|-------------------------------------------------------|
+| `npm run watch`      | Compiles and watch for changes.                       |
+| `npm run compile`    | Compile production ready assets.                      |
+| `npm run build`  | Build production ready bundle inside `/build/` folder |
