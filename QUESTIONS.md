@@ -1,4 +1,4 @@
-# WPMUDEV's Coding Task Questions #
+# WPMUDEV Coding Task Questions #
 
 # 1. Reducing npm Build File Size:
 While executing npm’s build command, you will notice that the resulting zipped file is considerably large. Any suggestions on how to optimize and reduce its size?
