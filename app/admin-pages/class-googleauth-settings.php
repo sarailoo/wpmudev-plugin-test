@@ -149,6 +149,7 @@ class Auth extends Base {
 				'redirectUrl'      => 'redirectUrl',
 				'restEndpointSave' => 'wpmudev/v1/auth/auth-url',
 				'returnUrl'        => '[Replace with the /wp-json/wpmudev/v1/auth/confirm url]',
+				'nonce'            => wp_create_nonce( 'wp_rest' ),
 			),
 		);
 	}

@@ -46,7 +46,9 @@ class Auth extends Endpoint {
 			$this->get_endpoint(),
 			array(
 				array(
-					'methods' => 'GET',
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'save_credentials' ),
+					'permission_callback' => array( $this, 'edit_permission' ),
 					'args'    => array(
 						'client_id'     => array(
 							'required'    => true,
@@ -67,9 +69,32 @@ class Auth extends Endpoint {
 	/**
 	 * Save the client id and secret.
 	 *
-	 *
 	 * @since 1.0.0
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_REST_Response Response object on success, or an error array on failure.
 	 */
-	public function save_credentials() {
+	public function save_credentials( $request ) {
+		$client_id     = sanitize_text_field( $request['client_id'] );
+		$client_secret = sanitize_text_field( $request['client_secret'] );
+
+		$options = array(
+			'client_id'     => $client_id,
+			'client_secret' => $client_secret,
+		);
+
+		try {
+			update_option( 'wpmudev_plugin_test_settings', $options );
+
+			return rest_ensure_response( array(
+				'status'  => 'success',
+				'message' => __( 'Settings saved successfully.', 'wpmudev-plugin-test' ),
+			) );
+		} catch ( Exception $e ) {
+			return rest_ensure_response( array(
+				'status'  => 'error',
+				'message' => $e->getMessage(),
+			), 500 );
+		}
 	}
 }

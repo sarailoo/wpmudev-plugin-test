@@ -5,16 +5,32 @@ $sui-image-path: '~@wpmudev/shared-ui/dist/images/';
 // Share UI styles
 @import "@wpmudev/shared-ui";
 
-.sui-box-body {
-    .components-base-control {
-        min-width: 100%;
-
-        input[type="text"] {
+.sui-box {
+    .sui-box-body {
+        .components-base-control {
             min-width: 100%;
+    
+            input[type="text"] {
+                min-width: 100%;
+            }
+    
+            label {
+                display:block;
+            }
+        }
+    }
+
+    .components-notice {
+        padding: 10px 30px 10px 30px;
+
+        &.is-success {
+            background-color: #dff0d8;
+            color: #3c763d;
         }
 
-        label {
-            display:block;
+        &.is-error {
+            background-color: #f2dede;
+            color: #a94442;
         }
     }
 }
