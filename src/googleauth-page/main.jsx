@@ -13,8 +13,11 @@ const WPMUDEV_PluginTest = () => {
     const [ clientSecret, setClientSecret ] = useState( '' );
     const [ message, setMessage ] = useState( '' );
     const [ noticeStatus, setNoticeStatus ] = useState( '' );
+    const [ isLoading, setIsLoading ] = useState( false );
 
     const handleClick = async () => {
+        setIsLoading( true );
+
         $.ajax( {
             type: 'POST',
             url: window.wpmudevPluginTest.pluginUrl + 'wp-json/wpmudev/v1/auth/auth-url',
@@ -27,6 +30,8 @@ const WPMUDEV_PluginTest = () => {
             } ),
             contentType: 'application/json',
             success: function ( response ) {
+                setIsLoading( false );
+
                 if ( response.status === 'success' ) {
                     setMessage( response.message );
                     setNoticeStatus( 'success' );
@@ -36,6 +41,7 @@ const WPMUDEV_PluginTest = () => {
                 }
             },
             error: function ( xhr, status, error ) {
+                setIsLoading(false);
                 console.error( 'AJAX error:', status, error );
                 setMessage( __( 'Failed to save settings. Please try again.', 'wpmudev-plugin-test' ) );
                 setNoticeStatus( 'error' );
@@ -105,8 +111,9 @@ const WPMUDEV_PluginTest = () => {
                     <Button
                         variant="primary"
                         onClick={ handleClick }
+                        disabled={ isLoading }
                     >
-                        Save
+                        { isLoading ? __( 'Loading...', 'wpmudev-plugin-test' ) : __( 'Save', 'wpmudev-plugin-test' ) }
                     </Button>
 
                 </div>
