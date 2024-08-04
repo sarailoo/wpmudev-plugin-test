@@ -22,7 +22,7 @@ const WPMUDEV_PluginTest = () => {
             type: 'POST',
             url: window.wpmudevPluginTest.siteUrl + 'wp-json/wpmudev/v1/auth/auth-url',
             beforeSend: function ( xhr ) {
-                xhr.setRequestHeader( 'X-WP-Nonce', window.wpmudevPluginTest.nonce );
+                xhr.setRequestHeader( 'X-WP-Nonce', window.wpmudevPluginTest.restNonce );
             },
             data: JSON.stringify( {
                 client_id: clientId,
@@ -37,11 +37,11 @@ const WPMUDEV_PluginTest = () => {
                     setNoticeStatus( 'success' );
                 } else {
                     setMessage( response?.message );
-                    setNoticeStatus('error');
+                    setNoticeStatus( 'error' );
                 }
             },
             error: function ( xhr, status, error ) {
-                setIsLoading(false);
+                setIsLoading( false );
                 console.error( 'AJAX error:', status, error );
                 setMessage( __( 'Failed to save settings. Please try again.', 'wpmudev-plugin-test' ) );
                 setNoticeStatus( 'error' );

@@ -150,7 +150,7 @@ class Auth extends Base {
 				'restEndpointSave' => 'wpmudev/v1/auth/auth-url',
 				'returnUrl'        => Auth_Confirm::get_instance()->get_endpoint_url(),
 				'siteUrl'          => trailingslashit( site_url() ),
-				'nonce'            => wp_create_nonce( 'wp_rest' ),
+				'restNonce'            => wp_create_nonce( 'wp_rest' ),
 			),
 		);
 	}
