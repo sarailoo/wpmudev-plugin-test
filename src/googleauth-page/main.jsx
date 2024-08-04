@@ -94,22 +94,22 @@ const WPMUDEV_PluginTest = () => {
                 </div>
 
                 <div className="sui-box-settings-row">
-                <span>
-                    { __(
-                    'Please use this url ',
-                    'wpmudev-plugin-test'
-                    ) }
-                    <em>{ window.wpmudevPluginTest.returnUrl }</em>
-                    { __(
-                    ' in your Google API\'s ',
-                    'wpmudev-plugin-test'
-                    ) }
-                    <strong>{ __( 'Authorized redirect URIs', 'wpmudev-plugin-test' ) }</strong>
-                    { __(
-                    ' field.',
-                    'wpmudev-plugin-test'
-                    ) }
-                </span>
+                    <span>
+                        { __(
+                        'Please use this url ',
+                        'wpmudev-plugin-test'
+                        ) }
+                        <em>{ window.wpmudevPluginTest.returnUrl }</em>
+                        { __(
+                        ' in your Google API\'s ',
+                        'wpmudev-plugin-test'
+                        ) }
+                        <strong>{ __( 'Authorized redirect URIs', 'wpmudev-plugin-test' ) }</strong>
+                        { __(
+                        ' field.',
+                        'wpmudev-plugin-test'
+                        ) }
+                    </span>
                 </div>
             </div>
 

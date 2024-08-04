@@ -93,6 +93,7 @@ final class Loader extends Base {
 	 */
 	private function init() {
 		App\Admin_Pages\Auth::instance()->init();
+		App\Admin_Pages\Maintenance::instance()->init();
 		Endpoints\V1\Auth::instance();
 		Endpoints\V1\Auth_Confirm::instance();
 	}
