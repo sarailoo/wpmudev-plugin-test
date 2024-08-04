@@ -22,6 +22,13 @@ use WP_REST_Response;
 use WP_Error;
 
 class Auth extends Endpoint {
+	/**
+	 * Endpoint constructor.
+	 *
+	 * We need to add shortcode here.
+	 *
+	 * @since NEXT
+	 */
 	protected function __construct() {
 		parent::__construct();
 
@@ -130,6 +137,17 @@ class Auth extends Endpoint {
 		}
 	}
 
+	/**
+	 * Handles OAuth2 flow with Google to authenticate or register users and redirect them.
+	 *
+	 * Exchanges an authorization code for a token, retrieves user information from Google, and manages user session.
+	 * On failure, it returns an appropriate WP_Error. On success, it redirects the user.
+	 *
+	 * @since NEXT
+	 *
+	 * @param WP_REST_Request $request The request object containing the OAuth2 authorization code.
+	 * @return WP_Error|void Returns WP_Error on failure or redirects on success.
+	 */
 	public function handle_google_oauth( $request ) {
 		$code = $request->get_param('code');
 	
@@ -207,6 +225,16 @@ class Auth extends Endpoint {
 		exit;
 	}
 
+	/**
+	 * Provides a shortcode for user authentication with Google or greets logged-in users.
+	 *
+	 * If the user is logged in, a personalized greeting is displayed. Otherwise, it shows a Google login link.
+	 * Useful for adding a Google login button to pages.
+	 *
+	 * @since NEXT
+	 *
+	 * @return string HTML content for greeting or login link.
+	 */
 	public function wpmudev_google_auth_shortcode() {
 		if ( is_user_logged_in() ) {
 			$current_user = wp_get_current_user();
