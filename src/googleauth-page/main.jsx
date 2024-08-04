@@ -20,7 +20,7 @@ const WPMUDEV_PluginTest = () => {
 
         $.ajax( {
             type: 'POST',
-            url: window.wpmudevPluginTest.pluginUrl + 'wp-json/wpmudev/v1/auth/auth-url',
+            url: window.wpmudevPluginTest.siteUrl + 'wp-json/wpmudev/v1/auth/auth-url',
             beforeSend: function ( xhr ) {
                 xhr.setRequestHeader( 'X-WP-Nonce', window.wpmudevPluginTest.nonce );
             },
