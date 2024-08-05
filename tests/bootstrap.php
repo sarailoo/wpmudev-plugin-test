@@ -5,6 +5,9 @@
  * @package Wpmudev_Plugin_Test
  */
 
+// Load the Composer autoloader.
+require dirname( dirname( __FILE__ ) ) . '/vendor/autoload.php';
+
 $_tests_dir = getenv( 'WP_TESTS_DIR' );
 
 if ( ! $_tests_dir ) {
