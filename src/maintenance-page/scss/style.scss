@@ -19,18 +19,4 @@ $sui-image-path: '~@wpmudev/shared-ui/dist/images/';
             }
         }
     }
-
-    .components-notice {
-        padding: 10px 30px 10px 30px;
-
-        &.is-success {
-            background-color: #dff0d8;
-            color: #3c763d;
-        }
-
-        &.is-error {
-            background-color: #f2dede;
-            color: #a94442;
-        }
-    }
 }

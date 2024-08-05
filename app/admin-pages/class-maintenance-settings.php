@@ -1,6 +1,6 @@
 <?php
 /**
- * Google Auth block.
+ * Posts maintenance.
  *
  * @link          https://wpmudev.com/
  * @since         1.0.0
@@ -17,9 +17,8 @@ namespace WPMUDEV\PluginTest\App\Admin_Pages;
 defined( 'WPINC' ) || die;
 
 use WPMUDEV\PluginTest\Base;
-use WPMUDEV\PluginTest\Endpoints\V1\Auth_Confirm;
 
-class Auth extends Base {
+class Maintenance extends Base {
 	/**
 	 * The page title.
 	 *
@@ -32,23 +31,7 @@ class Auth extends Base {
 	 *
 	 * @var string
 	 */
-	private $page_slug = 'wpmudev_plugintest_auth';
-
-	/**
-	 * Google auth credentials.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var array
-	 */
-	private $creds = array();
-
-	/**
-	 * Option name.
-	 *
-	 * @var string
-	 */
-	private $option_name = 'wpmudev_plugin_tests_auth';
+	private $page_slug = 'wpmudev_plugintest_maintenance';
 
 	/**
 	 * Page Assets.
@@ -75,12 +58,11 @@ class Auth extends Base {
 	 * Initializes the page.
 	 *
 	 * @return void
-	 * @since 1.0.0
+	 * @since NEXT
 	 *
 	 */
 	public function init() {
-		$this->page_title     = __( 'Google Auth', 'wpmudev-plugin-test' );
-		$this->creds          = get_option( $this->option_name, array() );
+		$this->page_title     = __( 'Posts Maintenance', 'wpmudev-plugin-test' );
 		$this->assets_version = ! empty( $this->script_data( 'version' ) ) ? $this->script_data( 'version' ) : WPMUDEV_PLUGINTEST_VERSION;
 		$this->unique_id      = "wpmudev_plugintest_auth_main_wrap-{$this->assets_version}";
 
@@ -88,16 +70,20 @@ class Auth extends Base {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 		// Add body class to admin pages.
 		add_filter( 'admin_body_class', array( $this, 'admin_body_classes' ) );
+
+		add_action( 'wp_ajax_wpmudev_scan_posts', array( $this, 'handle_scan_posts_ajax' ) );
+		add_action( 'init', array( $this, 'wpmudev_schedule_daily_scan' ) );
+		add_action( 'wpmudev_daily_scan_event', array( $this, 'handle_scan_posts_cron' ) );
 	}
 
 	public function register_admin_page() {
 		$page = add_menu_page(
-			'Google Auth setup',
+			'Posts Maintenance',
 			$this->page_title,
 			'manage_options',
 			$this->page_slug,
 			array( $this, 'callback' ),
-			'dashicons-google',
+			'dashicons-search',
 			6
 		);
 
@@ -123,9 +109,9 @@ class Auth extends Base {
 			$this->page_scripts = array();
 		}
 
-		$handle       = 'wpmudev_plugintest_authpage';
-		$src          = WPMUDEV_PLUGINTEST_ASSETS_URL . '/js/authsettingspage.min.js';
-		$style_src    = WPMUDEV_PLUGINTEST_ASSETS_URL . '/css/authsettingspage.min.css';
+		$handle       = 'wpmudev_plugintest_maintenancepage';
+		$src          = WPMUDEV_PLUGINTEST_ASSETS_URL . '/js/maintenancesettingspage.min.js';
+		$style_src    = WPMUDEV_PLUGINTEST_ASSETS_URL . '/css/maintenancesettingspage.min.css';
 		$dependencies = ! empty( $this->script_data( 'dependencies' ) )
 			? $this->script_data( 'dependencies' )
 			: array(
@@ -143,14 +129,9 @@ class Auth extends Base {
 			'ver'       => $this->assets_version,
 			'strategy'  => true,
 			'localize'  => array(
-				'dom_element_id'   => $this->unique_id,
-				'clientID'         => 'clientID',
-				'clientSecret'     => 'clientSecret',
-				'redirectUrl'      => 'redirectUrl',
-				'restEndpointSave' => 'wpmudev/v1/auth/auth-url',
-				'returnUrl'        => Auth_Confirm::get_instance()->get_endpoint_url(),
-				'siteUrl'          => trailingslashit( site_url() ),
-				'restNonce'        => wp_create_nonce( 'wp_rest' ),
+				'dom_element_id' => $this->unique_id,
+				'ajaxurl'        => admin_url( 'admin-ajax.php' ),
+				'wpmudevNonce'   => wp_create_nonce( 'wpmudev' ),
 			),
 		);
 	}
@@ -242,5 +223,79 @@ class Auth extends Base {
 		$classes .= ' sui-' . str_replace( '.', '-', WPMUDEV_PLUGINTEST_SUI_VERSION ) . ' ';
 
 		return $classes;
+	}
+
+	/**
+	 * Schedules a daily event for scanning posts.
+	 *
+	 * @since NEXT
+	 * @return void
+	 */
+	public function wpmudev_schedule_daily_scan() {
+		if ( ! wp_next_scheduled( 'wpmudev_daily_scan_event' ) ) {
+			wp_schedule_event( time(), 'daily', 'wpmudev_daily_scan_event' );
+		}
+	}
+
+	/**
+	 * Handles the post scanning process based on the context (ajax, cron, or cli).
+	 *
+	 * @since NEXT
+	 * @param string $context The context in which the function is called. Defaults to 'ajax'.
+	 * @return void
+	 */
+	public function handle_scan_posts( $context = 'ajax' ) {
+		if ( 'ajax' === $context ) {
+			check_ajax_referer( 'wpmudev', 'nonce' );
+		}
+
+		$post_types = apply_filters( 'wpmudev_scan_post_types', array( 'post', 'page' ) );
+
+		$args = array(
+			'post_type'      => $post_types,
+			'post_status'    => 'publish',
+			'posts_per_page' => -1,
+		);
+
+		$query = new \WP_Query( $args );
+
+		if ( $query->have_posts() ) {
+			while ( $query->have_posts() ) {
+				$query->the_post();
+				update_post_meta( get_the_ID(), 'wpmudev_test_last_scan', time() );
+			}
+
+			wp_reset_postdata();
+
+			if ( 'ajax' === $context ) {
+				wp_send_json_success();
+			} elseif ( 'cli' === $context ) {
+				\WP_CLI::success( 'Posts scanned successfully.' );
+			}
+		} elseif ( 'ajax' === $context ) {
+			wp_send_json_error();
+		} elseif ( 'cli' === $context ) {
+			\WP_CLI::error( 'No posts found to scan.' );
+		}
+	}
+
+	/**
+	 * Handles the post scanning process for AJAX requests.
+	 *
+	 * @since NEXT
+	 * @return void
+	 */
+	public function handle_scan_posts_ajax() {
+		$this->handle_scan_posts();
+	}
+
+	/**
+	 * Handles the post scanning process for cron jobs.
+	 *
+	 * @since NEXT
+	 * @return void
+	 */
+	public function handle_scan_posts_cron() {
+		$this->handle_scan_posts( 'cron' );
 	}
 }
