@@ -32,7 +32,7 @@ class Auth_Confirm extends Endpoint {
 		parent::__construct();
 
 		if ( ! shortcode_exists( 'wpmudev_google_auth' ) ) {
-			add_shortcode( 'wpmudev_google_auth', [ $this, 'wpmudev_google_auth_shortcode' ] );
+			add_shortcode( 'wpmudev_google_auth', array( $this, 'wpmudev_google_auth_shortcode' ) );
 		}
 	}
 
@@ -45,7 +45,7 @@ class Auth_Confirm extends Endpoint {
 	 * @return Auth_Confirm
 	 */
 	public static function get_instance() {
-		if ( self::$instance === null ) {
+		if ( null === self::$instance ) {
 			self::$instance = new self();
 		}
 
@@ -103,22 +103,25 @@ class Auth_Confirm extends Endpoint {
 	 * @return WP_Error|void Returns WP_Error on failure or redirects on success.
 	 */
 	public function handle_google_oauth( $request ) {
-		$code = $request->get_param('code');
-	
-		if ( !$code ) {
+		$code = $request->get_param( 'code' );
+
+		if ( ! $code ) {
 			return new WP_Error( 'missing_code', __( 'Missing authorization code.', 'wpmudev-plugin-test' ), array( 'status' => 400 ) );
 		}
 
 		// Exchange code for access token.
-		$response = wp_remote_post( 'https://oauth2.googleapis.com/token', array(
-			'body' => array(
-				'code'          => $code,
-				'client_id'     => get_option( 'wpmudev_plugin_test_settings' )['client_id'],
-				'client_secret' => get_option( 'wpmudev_plugin_test_settings' )['client_secret'],
-				'redirect_uri'  => home_url( '/wp-json/wpmudev/v1/auth/confirm' ),
-				'grant_type'    => 'authorization_code',
-			),
-		) );
+		$response = wp_remote_post(
+			'https://oauth2.googleapis.com/token',
+			array(
+				'body' => array(
+					'code'          => $code,
+					'client_id'     => get_option( 'wpmudev_plugin_test_settings' )['client_id'],
+					'client_secret' => get_option( 'wpmudev_plugin_test_settings' )['client_secret'],
+					'redirect_uri'  => home_url( '/wp-json/wpmudev/v1/auth/confirm' ),
+					'grant_type'    => 'authorization_code',
+				),
+			)
+		);
 
 		if ( is_wp_error( $response ) ) {
 			return $response;
@@ -133,26 +136,29 @@ class Auth_Confirm extends Endpoint {
 
 		// Retrieve user info from Google.
 		$access_token = $data['access_token'];
-		$response = wp_remote_get( 'https://www.googleapis.com/oauth2/v2/userinfo', array(
-			'headers' => array(
-				'Authorization' => 'Bearer ' . $access_token,
-			),
-		) );
+		$response     = wp_remote_get(
+			'https://www.googleapis.com/oauth2/v2/userinfo',
+			array(
+				'headers' => array(
+					'Authorization' => 'Bearer ' . $access_token,
+				),
+			)
+		);
 
 		if ( is_wp_error( $response ) ) {
 			return $response;
 		}
 
-		$body = wp_remote_retrieve_body( $response );
+		$body      = wp_remote_retrieve_body( $response );
 		$user_info = json_decode( $body, true );
-	
+
 		if ( ! isset( $user_info['email'] ) ) {
 			return new WP_Error( 'missing_email', __( 'Failed to retrieve email from Google.', 'wpmudev-plugin-test' ), array( 'status' => 400 ) );
 		}
 
 		// Handle user login/registration.
 		$email = sanitize_email( $user_info['email'] );
-		$user = get_user_by( 'email', $email );
+		$user  = get_user_by( 'email', $email );
 
 		if ( $user ) {
 			// User exists, log them in.
@@ -161,8 +167,8 @@ class Auth_Confirm extends Endpoint {
 		} else {
 			// Create new user.
 			$random_password = wp_generate_password( 12, false );
-			$user_id = wp_create_user( $email, $random_password, $email );
-	
+			$user_id         = wp_create_user( $email, $random_password, $email );
+
 			if ( is_wp_error( $user_id ) ) {
 				return $user_id;
 			}
@@ -174,7 +180,7 @@ class Auth_Confirm extends Endpoint {
 		// Redirect to admin or home page.
 		$redirect_url = is_user_logged_in() ? admin_url() : home_url();
 
-		wp_redirect( $redirect_url );
+		wp_safe_redirect( $redirect_url );
 
 		exit;
 	}
@@ -194,12 +200,15 @@ class Auth_Confirm extends Endpoint {
 			$current_user = wp_get_current_user();
 			return '<p>' . sprintf(
 				/* translators: %s: user display name */
-				__( 'Hello, %s!', 'wpmudev-plugin-test' ),
+				__(
+					'Hello, %s!',
+					'wpmudev-plugin-test'
+				),
 				esc_html( $current_user->display_name )
-				) . '</p>';
+			) . '</p>';
 		}
 
-		$auth_url = 'https://accounts.google.com/o/oauth2/auth?client_id=' . urlencode( get_option('wpmudev_plugin_test_settings')['client_id'] ) . '&redirect_uri=' . urlencode( $this->get_endpoint_url() ) . '&response_type=code&scope=email';
+		$auth_url = 'https://accounts.google.com/o/oauth2/auth?client_id=' . rawurlencode( get_option( 'wpmudev_plugin_test_settings' )['client_id'] ) . '&redirect_uri=' . rawurlencode( $this->get_endpoint_url() ) . '&response_type=code&scope=email';
 		return '<a href="' . esc_url( $auth_url ) . '">' . __( 'Login with Google', 'wpmudev-plugin-test' ) . '</a>';
 	}
 }

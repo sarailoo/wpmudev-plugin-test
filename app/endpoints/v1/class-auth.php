@@ -50,7 +50,7 @@ class Auth extends Endpoint {
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'save_credentials' ),
 					'permission_callback' => array( $this, 'edit_permission' ),
-					'args'    => array(
+					'args'                => array(
 						'client_id'     => array(
 							'required'    => true,
 							'description' => __( 'The client ID from Google API project.', 'wpmudev-plugin-test' ),
@@ -79,10 +79,13 @@ class Auth extends Endpoint {
 		$nonce = $request->get_header( 'X-WP-Nonce' );
 
 		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-			return new WP_REST_Response( array(
-				'status'  => 'error',
-				'message' => __( 'Invalid nonce.', 'wpmudev-plugin-test' ),
-			), 403 );
+			return new WP_REST_Response(
+				array(
+					'status'  => 'error',
+					'message' => __( 'Invalid nonce.', 'wpmudev-plugin-test' ),
+				),
+				403,
+			);
 		}
 
 		$client_id     = sanitize_text_field( $request['client_id'] );
@@ -96,15 +99,20 @@ class Auth extends Endpoint {
 		try {
 			update_option( 'wpmudev_plugin_test_settings', $options );
 
-			return rest_ensure_response( array(
-				'status'  => 'success',
-				'message' => __( 'Settings saved successfully.', 'wpmudev-plugin-test' ),
-			) );
+			return rest_ensure_response(
+				array(
+					'status'  => 'success',
+					'message' => __( 'Settings saved successfully.', 'wpmudev-plugin-test' ),
+				)
+			);
 		} catch ( Exception $e ) {
-			return rest_ensure_response( array(
-				'status'  => 'error',
-				'message' => $e->getMessage(),
-			), 500 );
+			return rest_ensure_response(
+				array(
+					'status'  => 'error',
+					'message' => $e->getMessage(),
+				),
+				500
+			);
 		}
 	}
 }

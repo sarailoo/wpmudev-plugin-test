@@ -5,7 +5,7 @@
  * @package WPMUDEV\PluginTest
  */
 
- namespace WPMUDEV\PluginTest\CLI;
+namespace WPMUDEV\PluginTest\CLI;
 
 // Abort if called directly.
 defined( 'WPINC' ) || die;
@@ -37,7 +37,7 @@ class Scan_Posts_CLI {
 	 * Initialize the WP-CLI commands.
 	 */
 	public function init() {
-		WP_CLI::add_command( 'wpmudev scan-posts', [ $this, 'scan_posts' ] );
+		WP_CLI::add_command( 'wpmudev scan-posts', array( $this, 'scan_posts' ) );
 	}
 
 	/**

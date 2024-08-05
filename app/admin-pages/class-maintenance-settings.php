@@ -232,7 +232,7 @@ class Maintenance extends Base {
 	 * @return void
 	 */
 	public function wpmudev_schedule_daily_scan() {
-		if ( ! wp_next_scheduled('wpmudev_daily_scan_event' ) ) {
+		if ( ! wp_next_scheduled( 'wpmudev_daily_scan_event' ) ) {
 			wp_schedule_event( time(), 'daily', 'wpmudev_daily_scan_event' );
 		}
 	}
@@ -262,7 +262,7 @@ class Maintenance extends Base {
 		if ( $query->have_posts() ) {
 			while ( $query->have_posts() ) {
 				$query->the_post();
-				update_post_meta( get_the_ID(), 'wpmudev_test_last_scan', current_time( 'timestamp' ) );
+				update_post_meta( get_the_ID(), 'wpmudev_test_last_scan', time() );
 			}
 
 			wp_reset_postdata();
@@ -272,12 +272,10 @@ class Maintenance extends Base {
 			} elseif ( 'cli' === $context ) {
 				\WP_CLI::success( 'Posts scanned successfully.' );
 			}
-		} else {
-			if ( 'ajax' === $context ) {
-				wp_send_json_error();
-			} elseif ( 'cli' === $context ) {
-				\WP_CLI::error( 'No posts found to scan.' );
-			}
+		} elseif ( 'ajax' === $context ) {
+			wp_send_json_error();
+		} elseif ( 'cli' === $context ) {
+			\WP_CLI::error( 'No posts found to scan.' );
 		}
 	}
 
