@@ -25,7 +25,7 @@ To run the unit tests for the plugin, including the Scan Posts functionality, us
 `phpunit --filter Scan_Posts_Test`
 
 ## Customizing Post Types for Scan
-You can change the post types that are scanned by the plugin by using the `wpmudev_scan_post_types filter`. By default, the plugin scans post and page post types. Here is an example of how to add a custom post type to the filter:
+You can change the post types that are scanned by the plugin by using the `wpmudev_scan_post_types` filter. By default, the plugin scans post and page post types. Here is an example of how to add a custom post type to the filter:
 ```
 add_filter( 'wpmudev_scan_post_types', function( $post_types ) {
     $post_types[] = 'custom_post_type';
