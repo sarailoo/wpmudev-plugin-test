@@ -37,3 +37,16 @@ add_filter( 'wpmudev_scan_post_types', function( $post_types ) {
 The plugin provides a shortcode `[wpmudev_google_login]` that can be used to display a Google login link. Use this shortcode in any post or page where you want to display the login link:
 `[wpmudev_google_login]`
 This shortcode will generate a link that users can click to log in using their Google account.
+
+## WP-CLI Command for Scan Posts
+The plugin includes a WP-CLI command to execute the Scan Posts action from the terminal. This can be useful for system administrators who want to automate the scan process or run it manually.
+
+To use the WP-CLI command, run:
+
+`wp wpmudev scan_posts`
+
+### Usage Instructions
+- Ensure WP-CLI is installed and configured for your WordPress installation.
+- Run the command `wp wpmudev scan_posts` from your terminal.
+
+This command will scan all public posts and pages, updating the `wpmudev_test_last_scan` post meta with the current timestamp.
