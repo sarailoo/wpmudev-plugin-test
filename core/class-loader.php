@@ -96,5 +96,10 @@ final class Loader extends Base {
 		App\Admin_Pages\Maintenance::instance()->init();
 		Endpoints\V1\Auth::instance();
 		Endpoints\V1\Auth_Confirm::instance();
+
+		// Load WP-CLI commands if WP_CLI is defined.
+		if ( defined( 'WP_CLI' ) && WP_CLI ) {
+			CLI\Scan_Posts_CLI::instance()->init();
+		}
 	}
 }

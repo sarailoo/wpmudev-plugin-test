@@ -71,9 +71,9 @@ class Maintenance extends Base {
 		// Add body class to admin pages.
 		add_filter( 'admin_body_class', array( $this, 'admin_body_classes' ) );
 
-		add_action( 'wp_ajax_wpmudev_scan_posts', array( $this, 'handle_scan_posts' ) );
+		add_action( 'wp_ajax_wpmudev_scan_posts', array( $this, 'handle_scan_posts_ajax' ) );
 		add_action( 'init', array( $this, 'wpmudev_schedule_daily_scan' ) );
-		add_action( 'wpmudev_daily_scan_event', array( $this, 'handle_scan_posts' ) );
+		add_action( 'wpmudev_daily_scan_event', array( $this, 'handle_scan_posts_cron' ) );
 	}
 
 	public function register_admin_page() {
@@ -225,41 +225,79 @@ class Maintenance extends Base {
 		return $classes;
 	}
 
+	/**
+	 * Schedules a daily event for scanning posts.
+	 *
+	 * @since NEXT
+	 * @return void
+	 */
 	public function wpmudev_schedule_daily_scan() {
 		if ( ! wp_next_scheduled('wpmudev_daily_scan_event' ) ) {
 			wp_schedule_event( time(), 'daily', 'wpmudev_daily_scan_event' );
 		}
 	}
 
-    public function handle_scan_posts() {
-        if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
-            check_ajax_referer( 'wpmudev', 'nonce' );
-        }
+	/**
+	 * Handles the post scanning process based on the context (ajax, cron, or cli).
+	 *
+	 * @since NEXT
+	 * @param string $context The context in which the function is called. Defaults to 'ajax'.
+	 * @return void
+	 */
+	public function handle_scan_posts( $context = 'ajax' ) {
+		if ( 'ajax' === $context ) {
+			check_ajax_referer( 'wpmudev', 'nonce' );
+		}
 
-        $post_types = apply_filters( 'wpmudev_scan_post_types', array( 'post', 'page' ) );
+		$post_types = apply_filters( 'wpmudev_scan_post_types', array( 'post', 'page' ) );
 
-        $args = array(
-            'post_type'      => $post_types,
-            'post_status'    => 'publish',
-            'posts_per_page' => -1
-        );
+		$args = array(
+			'post_type'      => $post_types,
+			'post_status'    => 'publish',
+			'posts_per_page' => -1,
+		);
 
-        $query = new \WP_Query( $args );
+		$query = new \WP_Query( $args );
 
-        if ( $query->have_posts() ) {
-            while ( $query->have_posts() ) {
-                $query->the_post();
-                update_post_meta( get_the_ID(), 'wpmudev_test_last_scan', current_time( 'timestamp' ) );
-            }
-            wp_reset_postdata();
+		if ( $query->have_posts() ) {
+			while ( $query->have_posts() ) {
+				$query->the_post();
+				update_post_meta( get_the_ID(), 'wpmudev_test_last_scan', current_time( 'timestamp' ) );
+			}
 
-            if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
-                wp_send_json_success();
-            }
-        } else {
-            if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
-                wp_send_json_error();
-            }
-        }
-    }
+			wp_reset_postdata();
+
+			if ( 'ajax' === $context ) {
+				wp_send_json_success();
+			} elseif ( 'cli' === $context ) {
+				\WP_CLI::success( 'Posts scanned successfully.' );
+			}
+		} else {
+			if ( 'ajax' === $context ) {
+				wp_send_json_error();
+			} elseif ( 'cli' === $context ) {
+				\WP_CLI::error( 'No posts found to scan.' );
+			}
+		}
+	}
+
+	/**
+	 * Handles the post scanning process for AJAX requests.
+	 *
+	 * @since NEXT
+	 * @return void
+	 */
+	public function handle_scan_posts_ajax() {
+		$this->handle_scan_posts();
+	}
+
+	/**
+	 * Handles the post scanning process for cron jobs.
+	 *
+	 * @since NEXT
+	 * @return void
+	 */
+	public function handle_scan_posts_cron() {
+		$this->handle_scan_posts( 'cron' );
+	}
 }
